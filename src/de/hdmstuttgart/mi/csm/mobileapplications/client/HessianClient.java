@@ -31,6 +31,7 @@ public class HessianClient {
 			// Why are you writing the Hessian2Output to an ObjectOutputStream?
 			// You should be
 			hessianOut.writeObject(hw);
+			hessianOut.flush();
 		} catch (IOException e) {
 			Log.d("Socket Send", "Exception: " + e);
 		}
