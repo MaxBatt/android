@@ -6,16 +6,20 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jmdns.JmDNS;
+
+import android.content.Context;
 import android.util.Log;
 
 /**
  * Listening Server, Opens a socket and waits for incoming connections. Notifies
- * its listeners of events.
+ * its listeners of events. Also handles the zeroconf-stuff.
  * 
  * @author moritzhaarmann
  * 
  */
-public class Server {
+public class Server {    
+    private Context context;
 
     public final static int SERVER_PORT = 8998;
 
@@ -97,6 +101,17 @@ public class Server {
         };
         this.acceptThread.start();
     }
+    
+    public void close(){
+        try {
+            this.serverSocket.close();
+            this.acceptThread.join(0);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Adds a listener . 

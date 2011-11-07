@@ -1,6 +1,9 @@
 package de.hdmstuttgart.mi.csm.mobileapplications;
 
+import java.io.IOException;
+
 import android.app.Activity;
+import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +20,7 @@ public class AndremoteActivity extends Activity implements
     private TextView numberField;
     private Button sendButton;
 
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,14 +33,23 @@ public class AndremoteActivity extends Activity implements
          * Just create a server.. the rest is handled internally, as no
          * callbacks are set.
          */
-        HessianServer server = new HessianServer(HelloWorld.class);
-        server.addListener(this);
+        HessianServer server;
+        try {
+            server = new HessianServer(HelloWorld.class, this.getApplicationContext());
+            server.addListener(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         /** Listener for Client's Send-Button. */
         sendButton = (Button) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(this);
     }
 
+
+    /**
+     * Called whenever the HessianServer receives an object.
+     */
     @Override
     public void onReceivedObject(final Object o) {
         textField.post(new Runnable() {

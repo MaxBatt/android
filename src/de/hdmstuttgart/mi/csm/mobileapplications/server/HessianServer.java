@@ -5,6 +5,11 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceInfo;
+
+import android.content.Context;
+import android.net.wifi.WifiManager.MulticastLock;
 import android.util.Log;
 
 import com.caucho.hessian.io.Hessian2Input;
@@ -21,13 +26,14 @@ import de.hdmstuttgart.mi.csm.mobileapplications.HelloWorld;
 public class HessianServer implements ServerListener {
     /**
      * The listener interface
+     * 
      * @author moritzhaarmann
-     *
+     * 
      */
     public interface Listener {
         public void onReceivedObject(Object o);
     }
-    
+
     /**
      * Holds the "expected class" that is read from the stream
      */
@@ -37,18 +43,32 @@ public class HessianServer implements ServerListener {
      * The Server used for networking
      */
     private Server server;
-    
+
     private ArrayList<Listener> listeners;
+
+    /**
+     * JmDNS handles the zeroconf stuff. good to have it around.
+     */
+    private JmDNS jmdns;
+
+    // We need this lock to ensure we can use multicast DNS.
+    private MulticastLock lock;
+
+    /**
+     * Reference to the context is required for jmdns.
+     */
+    private Context context;
 
     /**
      * Public constructor, Initializes the server and starts accepting
      * connections.
      * 
      * @param expectedClass
+     * @throws IOException 
      */
-    public HessianServer(Class<?> expectedClass) {
+    public HessianServer(Class<?> expectedClass, Context context) throws IOException {
         this.expectedClass = expectedClass;
-
+        this.context = context;
         this.server = new Server();
         this.server.addListener(this);
         this.listeners = new ArrayList<Listener>();
@@ -58,6 +78,15 @@ public class HessianServer implements ServerListener {
          */
         this.server.open();
         this.server.accept();
+        this.registerBonjour();
+    }
+    
+    /**
+     * Close the server.    
+     */
+    public void close(){
+        this.deregisterBonjour();
+        this.server.close();
     }
 
     /**
@@ -74,15 +103,40 @@ public class HessianServer implements ServerListener {
             // Magic: Read the object from the Hessian Input Stream
             HelloWorld o = (HelloWorld) input.readObject(this.expectedClass);
             Log.d("Decoding", "Output is " + o.text);
-            for ( Listener l : this.listeners) {
+            for (Listener l : this.listeners) {
                 l.onReceivedObject(o);
             }
-            
+
         } catch (IOException e) {
             // NOthing so far.
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+    }
+
+    /**
+     * Registers the current server using multicast dns.
+     * @throws IOException 
+     */
+    private void registerBonjour() throws IOException {
+        android.net.wifi.WifiManager wifi = (android.net.wifi.WifiManager) context
+                .getSystemService(android.content.Context.WIFI_SERVICE);
+        lock = wifi.createMulticastLock("HeeereDnssdLock");
+        // Hahahahahaha. can't stop laughing. Do they have arc in java land?
+        lock.setReferenceCounted(true);
+        lock.acquire();
+        this.jmdns = JmDNS.create();
+        this.jmdns.registerService(ServiceInfo.create("_hessian._tcp.local.", "HessianServer", Server.SERVER_PORT, "blablabla"));
+    }
+
+    /**
+     * Cancels the mDNS announcement.
+     */
+    private void deregisterBonjour() {
+        this.jmdns.unregisterAllServices();
+        if (lock != null)
+            lock.release();
 
     }
 
@@ -94,11 +148,12 @@ public class HessianServer implements ServerListener {
         System.out.println("Got an error: " + e);
 
     }
-    
 
     /**
-     * Adds a listener . 
-     * @param listener the new listener.
+     * Adds a listener .
+     * 
+     * @param listener
+     *            the new listener.
      */
     public void addListener(Listener listener) {
         this.listeners.add(listener);
@@ -106,7 +161,9 @@ public class HessianServer implements ServerListener {
 
     /**
      * Removes a listener
-     * @param listener the listener that should be removed.
+     * 
+     * @param listener
+     *            the listener that should be removed.
      */
     public void removeListener(Listener listener) {
         this.listeners.remove(listener);
