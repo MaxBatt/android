@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hessian Android Test</string>
+	<!-- SERVER -->
     <string name="app_name">Andremote</string>
-    <string name="text">Text Content</string>
-    <string name="number">Number Content</string>
+    <string name="serverTitle">Server</string>
+    <string name="text">Text Content: </string>
+    <string name="number">Number Content: </string>
+    <string name="serverSwitchButton">Client</string>
+    
+    <!-- CLIENT -->
+    <string name="clientTitle">Client</string>
+    <string name="clientLabel">Connect To</string>
+    <string name="clientDefaultHost">localhost</string>
+    <string name="clientDefaultPort">8998</string>
+    <string name="clientSendButton">Send</string>
+    <string name="clientErrStringMissing">Please type in a string and a port</string>
+    <string name="clientErrOK">OK</string>
+    <string name="clientDefaultText">Text</string>
+    <string name="clientDefaultNumber">Number</string>
+    <string name="clientObjectDataLabel">Object Data</string>
+    <string name="clientSwitchButton">Server</string>
 </resources>

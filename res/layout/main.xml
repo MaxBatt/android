@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
+<!-- CLIENT -->   
+<TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:text="@string/clientTitle" android:layout_width="wrap_content" android:id="@+id/textView1"></TextView>
+<EditText android:hint="@string/clientDefaultHost" android:id="@+id/inputHost" android:layout_height="wrap_content" android:layout_width="match_parent">
+    <requestFocus></requestFocus>
+</EditText>
+<EditText android:hint="@string/clientDefaultPort" android:id="@+id/inputPort" android:layout_height="wrap_content" android:layout_width="match_parent"></EditText>
+<EditText android:hint="@string/clientDefaultText" android:id="@+id/inputText" android:layout_height="wrap_content" android:layout_width="match_parent"></EditText>
+<EditText android:hint="@string/clientDefaultNumber" android:id="@+id/inputNumber" android:layout_height="wrap_content" android:layout_width="match_parent"></EditText>
+<Button android:text="@string/clientSendButton" android:layout_height="wrap_content" android:id="@+id/sendButton" android:layout_width="93dp"></Button>
+
+<!-- SERVER -->
+<TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:text="@string/serverTitle" android:layout_width="wrap_content" android:id="@+id/textView2"></TextView>
 <TableLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tableLayout1">
     <TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
-        <TextView android:id="@+id/text" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:text="@string/text"></TextView>
-        <TextView android:id="@+id/textLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:text=""></TextView>
+        <TextView android:id="@+id/text" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:text="@string/text"></TextView>
+        <TextView android:id="@+id/textLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:text=""></TextView>
     </TableRow>
     <TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
-        <TextView android:id="@+id/number" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:text="@string/number"></TextView>
-        <TextView android:id="@+id/numberLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:text=""></TextView>
+        <TextView android:id="@+id/number" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:text="@string/number"></TextView>
+        <TextView android:id="@+id/numberLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:text=""></TextView>
     </TableRow>
     <TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content"></TableRow>
     <TableRow android:id="@+id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content"></TableRow>
 </TableLayout>
 </LinearLayout>
+</ScrollView>
